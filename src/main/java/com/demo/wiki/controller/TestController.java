@@ -2,6 +2,7 @@ package com.demo.wiki.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController     //返回字符串
 /* @Controller     //返回页面 */
 public class TestController {
@@ -23,5 +24,10 @@ public class TestController {
     @GetMapping("/hello")      //405报错时请求method不支持；404表示请求访问不到，没有这个接口
     public String hello() {
         return "Hello World!";
+    }
+
+    @PostMapping("/hello/post")
+    public String helloPost(String name) {
+        return "Hello World! Post."+ name ;
     }
 }
