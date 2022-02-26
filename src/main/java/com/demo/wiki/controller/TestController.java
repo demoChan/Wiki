@@ -1,11 +1,15 @@
 package com.demo.wiki.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController     //返回字符串
 /* @Controller     //返回页面 */
 public class TestController {
+
+    @Value("${test.hello:TEST}")
+    private String testHello;
 
 /*
     * 增删改查GET,POST,PUT,DELETE
@@ -23,7 +27,7 @@ public class TestController {
 //    @RequestMapping(value = "hello",method = RequestMethod.GET )   //http请求总共有8种请求方式
     @GetMapping("/hello")      //405报错时请求method不支持；404表示请求访问不到，没有这个接口
     public String hello() {
-        return "Hello World!";
+        return "Hello World!" + testHello;
     }
 
     @PostMapping("/hello/post")
