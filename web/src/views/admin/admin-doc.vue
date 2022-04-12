@@ -59,7 +59,7 @@
           okText="保存"
           cancelText="取消"
   >
-    <a-form :model="doc" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
+    <a-form :model="doc" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }" >
       <a-form-item label="名称">
         <a-input v-model:value="doc.name" placeholder="请填写名称"/>
       </a-form-item>
@@ -81,8 +81,16 @@
       <a-form-item label="内容">
         <div id="content"></div>
       </a-form-item>
-
+      <a-form-item :wrapper-col="{ offset: 11 }">
+        <a-button type="primary" @click="handlePreviewContent()">
+          <EyeOutlined />内容预览
+        </a-button>
+      </a-form-item>
     </a-form>
+
+    <a-drawer width="800" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
+      <div class="wangeditor" :innerHTML="previewHtml"></div>
+    </a-drawer>
   </a-modal>
 
 </template>
@@ -347,6 +355,20 @@
         });
       };
 
+
+      // ----------------富文本预览--------------
+      const drawerVisible = ref(false);
+      const previewHtml = ref();
+      const handlePreviewContent = () => {
+        const html = editor.txt.html();
+        previewHtml.value = html;
+        drawerVisible.value = true;
+      };
+      const onDrawerClose = () => {
+        drawerVisible.value = false;
+      };
+
+
       onMounted(() => {
         handleQuery();
       });
@@ -368,7 +390,12 @@
         handleSave,
         handleDelete,
 
-        treeSelectData
+        treeSelectData,
+
+        drawerVisible,
+        previewHtml,
+        handlePreviewContent,
+        onDrawerClose
       }
     }
   });
