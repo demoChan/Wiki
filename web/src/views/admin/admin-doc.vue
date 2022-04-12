@@ -18,14 +18,16 @@
         </a-form>
       </p>
       <a-table
+              v-if="level1.length > 0"
               :columns="columns"
               :row-key="record => record.id"
               :data-source="level1"
               :loading="loading"
               :pagination="false"
+              defaultExpandAllRows="true"
       >
-        <template #cover="{ text: cover }">
-          <img v-if="cover" :src="cover" alt="avatar" />
+        <template #name="{ text, record }">
+          {{record.sort}} {{text}}
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
@@ -52,11 +54,14 @@
           title="文档表单"
           v-model:visible="modalVisible"
           :confirm-loading="modalLoading"
-          @ok="handleModalOk"
+          @ok="handleSave"
+          width="76%"
+          okText="保存"
+          cancelText="取消"
   >
-    <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <a-form :model="doc" :label-col="{ span: 2 }" :wrapper-col="{ span: 22 }">
       <a-form-item label="名称">
-        <a-input v-model:value="doc.name" />
+        <a-input v-model:value="doc.name" placeholder="请填写名称"/>
       </a-form-item>
       <a-form-item label="父文档">
         <a-tree-select
@@ -71,7 +76,7 @@
         </a-tree-select>
       </a-form-item>
       <a-form-item label="顺序">
-        <a-input v-model:value="doc.sort" />
+        <a-input v-model:value="doc.sort" placeholder="请填写顺序"/>
       </a-form-item>
       <a-form-item label="内容">
         <div id="content"></div>
@@ -110,16 +115,8 @@
       const columns = [
         {
           title: '名称',
-          dataIndex: 'name'
-        },
-        {
-          title: '父文档',
-          key: 'parent',
-          dataIndex: 'parent'
-        },
-        {
-          title: '顺序',
-          dataIndex: 'sort'
+          dataIndex: 'name',
+          slots: { customRender: 'name' }
         },
         {
           title: 'Action',
@@ -176,8 +173,9 @@
       const modalVisible = ref(false);
       const modalLoading = ref(false);
       const editor = new E('#content');
+      editor.config.zIndex = 0;
 
-      const handleModalOk = () => {
+      const handleSave = () => {
         modalLoading.value = true;
         axios.post("/doc/save", doc.value).then((response) => {
             modalLoading.value = false;
@@ -345,7 +343,7 @@
         doc,
         modalVisible,
         modalLoading,
-        handleModalOk,
+        handleSave,
         handleDelete,
 
         treeSelectData
