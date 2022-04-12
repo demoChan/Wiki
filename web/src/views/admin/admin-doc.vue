@@ -158,8 +158,6 @@
           } else{
             message.error(data.message);
           }
-
-
         });
       };
 
@@ -184,6 +182,7 @@
             const data = response.data; // data = commonResp
             if (data.success) {
                 modalVisible.value = false;
+                message.success("保存成功！")
 
                 // 重新加载列表
                 handleQuery();
@@ -262,22 +261,41 @@
       };
 
 
+        /**
+         * 内容查询
+         **/
+        const handleQueryContent = () => {
+            axios.get("/doc/find-content/" + doc.value.id).then((response) => {
+                const data = response.data;
+                if (data.success){
+                    editor.txt.html(data.content);
+                } else{
+                    message.error(data.message);
+                }
+            });
+        };
+
+
+
       /**
        * 编辑
        */
       const edit = (record: any) => {
-        modalVisible.value = true;
-        doc.value = Tool.copy(record);
+          modalVisible.value = true;
+          //清空富文本框
+          editor.txt.html("");
+          doc.value = Tool.copy(record);
+          handleQueryContent();
 
-        // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
-        treeSelectData.value = Tool.copy(level1.value);
-        setDisable(treeSelectData.value, record.id);
+          // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
+          treeSelectData.value = Tool.copy(level1.value);
+          setDisable(treeSelectData.value, record.id);
 
-        // 为选择树添加一个"无"
-        treeSelectData.value.unshift({id: 0, name: '无'});
-        setTimeout(function () {
-          editor.create();
-        },100);
+          // 为选择树添加一个"无"
+          treeSelectData.value.unshift({id: 0, name: '无'});
+          setTimeout(function () {
+              editor.create();
+          },100);
       };
 
 
@@ -285,18 +303,20 @@
        * 新增
        */
       const add = () => {
-        modalVisible.value = true;
-        doc.value = {
-          ebookId: route.query.ebookId
-        };
+          modalVisible.value = true;
+          //清空富文本框
+          editor.txt.html("");
+          doc.value = {
+              ebookId: route.query.ebookId
+          };
 
-        treeSelectData.value = Tool.copy(level1.value);
+          treeSelectData.value = Tool.copy(level1.value);
 
-        // 为选择树添加一个"无"
-        treeSelectData.value.unshift({id: 0, name: '无'});
-        setTimeout(function () {
-          editor.create();
-        },100);
+          // 为选择树添加一个"无"
+          treeSelectData.value.unshift({id: 0, name: '无'});
+          setTimeout(function () {
+              editor.create();
+          },100);
       };
 
       /**
