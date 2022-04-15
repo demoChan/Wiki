@@ -13,8 +13,8 @@ public class UserSaveReq {
     private String name;
 
     @NotNull(message = "【密码】不能为空")
-//    @Length(min = 6, max = 20, message = "【密码】长度为6-20个字符")
-    @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$", message = "【密码】长度为6-20个字符，至少包含数字和英文")
+//    @Length(min = 6, max = 32, message = "【密码】长度为6-32个字符")
+    @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}$", message = "【密码】长度为6-32个字符，至少包含数字和英文")
     private String password;
 
     public Long getId() {
