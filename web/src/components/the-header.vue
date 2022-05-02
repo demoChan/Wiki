@@ -20,9 +20,19 @@
             <a-menu-item key="/about">
                 <router-link to="/about">关于系统</router-link>
             </a-menu-item>
-            <a class="login-menu" v-if="user.id">
+            <a class="name-menu" v-if="user.id">
                 <span>{{user.name}}</span>
             </a>
+            <a-popconfirm
+                    title="确认退出登录？"
+                    ok-text="是"
+                    cancel-text="否"
+                    @confirm="logout()"
+            >
+                <a class="logout-menu" v-if="user.id" >
+                    <span>退出登录</span>
+                </a>
+            </a-popconfirm>
             <a class="login-menu" v-if="!user.id" @click="showLoginModal">
                 <span>登录</span>
             </a>
@@ -71,6 +81,7 @@
                 loginModalVisible.value = true;
             };
 
+
             // 登录
             const login = () => {
                 console.log("开始登录");
@@ -82,7 +93,22 @@
                     if (data.success) {
                         loginModalVisible.value = false;
                         message.success("登录成功！");
-                        store.commit("setUser", user.value);
+                        store.commit("setUser", data.content);
+                    }else {
+                        message.error(data.message);
+                    }
+                });
+            };
+
+
+            // 退出登录
+            const logout = () => {
+                console.log("退出登录");
+                axios.get('/user/logout/' + user.value.token).then((response) => {
+                    const data = response.data;
+                    if (data.success) {
+                        message.success("退出成功！");
+                        store.commit("setUser", {});
                     }else {
                         message.error(data.message);
                     }
@@ -95,16 +121,27 @@
                 showLoginModal,
                 loginUser,
                 login,
-                user
+                user,
+                logout
             }
         }
     });
 </script>
 
 <style>
+    .name-menu{
+        position: absolute;
+        right: 130px;
+        color: #f1f1f1;
+    }
+    .logout-menu{
+        position: absolute;
+        right: 30px;
+        color: #f1f1f1;
+    }
     .login-menu{
         position: absolute;
-        right: 50px;
+        right: 80px;
         color: #f1f1f1;
     }
 </style>
