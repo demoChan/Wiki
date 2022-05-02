@@ -1,10 +1,12 @@
 package com.demo.wiki.controller;
 
+import com.demo.wiki.req.UserLoginReq;
 import com.demo.wiki.req.UserQueryReq;
 import com.demo.wiki.req.UserResetPasswordReq;
 import com.demo.wiki.req.UserSaveReq;
 import com.demo.wiki.resp.CommonResp;
 import com.demo.wiki.resp.PageResp;
+import com.demo.wiki.resp.UserLoginResp;
 import com.demo.wiki.resp.UserQueryResp;
 import com.demo.wiki.service.UserService;
 import org.springframework.util.DigestUtils;
@@ -52,6 +54,16 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp resp = new CommonResp<>();
         userService.resetPassword(req);
+        return resp;
+    }
+
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq req)
+    {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp = new CommonResp<>();
+        UserLoginResp userLoginResp = userService.login(req);
+        resp.setContent(userLoginResp);
         return resp;
     }
 }

@@ -296,8 +296,7 @@
                 resetPassword
             }
         }
-    })
-    ;
+    });
 </script>
 
 <style scoped>
