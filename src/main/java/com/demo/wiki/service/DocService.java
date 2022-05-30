@@ -3,6 +3,8 @@ package com.demo.wiki.service;
 import com.demo.wiki.domain.Content;
 import com.demo.wiki.domain.Doc;
 import com.demo.wiki.domain.DocExample;
+import com.demo.wiki.exception.BusinessException;
+import com.demo.wiki.exception.BusinessExceptionCode;
 import com.demo.wiki.mapper.ContentMapper;
 import com.demo.wiki.mapper.DocMapper;
 import com.demo.wiki.mapper.DocMapperCust;
@@ -40,7 +42,7 @@ public class DocService {
     @Resource
     private SnowFlake snowFlake;
 
-    public List<DocQueryResp> all(Long ebookId){
+    public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
         docExample.createCriteria().andEbookIdEqualTo(ebookId);
         docExample.setOrderByClause("sort asc");
@@ -52,16 +54,17 @@ public class DocService {
 
         return list;
     }
-    public PageResp<DocQueryResp> list(DocQueryReq req){
+
+    public PageResp<DocQueryResp> list(DocQueryReq req) {
         DocExample docExample = new DocExample();
         docExample.setOrderByClause("sort asc");
         DocExample.Criteria criteria = docExample.createCriteria();
-        PageHelper.startPage(req.getPage(),req.getSize());
+        PageHelper.startPage(req.getPage(), req.getSize());
         List<Doc> docList = docMapper.selectByExample(docExample);
 
         PageInfo<Doc> pageInfo = new PageInfo<>(docList);
-        LOG.info("总行数：{}",pageInfo.getTotal());
-        LOG.info("总页数：{}",pageInfo.getPages());
+        LOG.info("总行数：{}", pageInfo.getTotal());
+        LOG.info("总页数：{}", pageInfo.getPages());
 
 //        List<DocResp> respList = new ArrayList<>();
 ////        for (Doc doc : docList){
@@ -100,7 +103,7 @@ public class DocService {
             // 更新
             docMapper.updateByPrimaryKey(doc);
             int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
-            if(count == 0){
+            if (count == 0) {
                 contentMapper.insert(content);
             }
         }
@@ -126,5 +129,12 @@ public class DocService {
         } else {
             return content.getContent();
         }
+    }
+
+    /**
+     * 点赞
+     */
+    public void vote(Long id) {
+        docMapperCust.increaseVoteCount(id);
     }
 }

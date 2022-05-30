@@ -6,7 +6,7 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-button type="primary" @click="handleQuery()">
+            <a-button v-show="false" type="primary" @click="handleQuery()">
               查询
             </a-button>
           </a-form-item>

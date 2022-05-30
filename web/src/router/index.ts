@@ -5,6 +5,7 @@ import Doc from '../views/doc.vue'
 import AdminUser from '../views/admin/admin-user.vue'
 import AdminEbook from '../views/admin/admin-ebook.vue'
 import AdminCategory from '../views/admin/admin-category.vue'
+import AdminAspect from '../views/admin/admin-aspcet.vue'
 import AdminDoc from '../views/admin/admin-doc.vue'
 import store from "@/store";
 import {Tool} from "@/util/tool";
@@ -42,6 +43,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin/ebook',
     name: 'AdminEbook',
     component: AdminEbook,
+    meta: {
+      loginRequire: true
+    }
+  },
+  {
+    path: '/admin/aspect',
+    name: 'AdminAspect',
+    component: AdminAspect,
     meta: {
       loginRequire: true
     }
